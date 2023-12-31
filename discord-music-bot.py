@@ -34,7 +34,7 @@ playing_music = {}
 @bot.event
 async def on_ready():
   print(bot.user.name, '봇이 정상적으로 작동을 시작했습니다.')
-  stat = discord.Game('집안일')
+  stat = discord.Game('상태입력')
   await bot.change_presence(status=discord.Status.online, activity=stat)
 
 
