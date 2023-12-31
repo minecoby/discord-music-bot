@@ -25,12 +25,6 @@ ydl_opts = {
     False,
 }
 #노래재생에 필요한 전역변수설정
-skip_music = False
-playing_music = False
-level_probability1 = 0.05
-level_probability2 = 0.1
-level_probability3 = 0.3
-level_probability4 = 0.5
 current_music = {}
 music_list = {}
 playing_music = {}
