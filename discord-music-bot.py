@@ -7,7 +7,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-token = os.environ.getenv("token")
+token = os.environ.get("token")
 intents = discord.Intents.all()
 intents.message_content = True
 intents.voice_states = True
