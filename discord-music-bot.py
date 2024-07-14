@@ -4,6 +4,8 @@ import yt_dlp
 import asyncio
 from datetime import timedelta
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 token = os.environ.getenv("token")
 intents = discord.Intents.all()
