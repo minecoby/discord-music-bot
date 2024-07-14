@@ -3,7 +3,11 @@ from discord.ext import commands
 import yt_dlp
 import asyncio
 from datetime import timedelta
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
+token = os.environ.get("DISCORDTOKEN")
 
 intents = discord.Intents.all()
 intents.message_content = True
@@ -15,26 +19,19 @@ ydl_opts = {
     'default_search':
     'ytsearch',
     'format':
-    'bestaudio/best',
-    'postprocessors': [{
-        'key': 'FFmpegExtractAudio',
-        'preferredcodec': 'mp3',
-        'preferredquality': '128',
-    }],
-    'youtube_include_dash_manifest':
-    False,
+    'bestaudio',
+    'noplaylist':'True'
 }
 #노래재생에 필요한 전역변수설정
 current_music = {}
 music_list = {}
 playing_music = {}
-
-
+mem = {}
 #봇이 정상적으로 실행되었음을 확인
 @bot.event
 async def on_ready():
   print(bot.user.name, '봇이 정상적으로 작동을 시작했습니다.')
-  stat = discord.Game('상태입력')
+  stat = discord.Game('집안일')
   await bot.change_presence(status=discord.Status.online, activity=stat)
 
 
@@ -42,7 +39,6 @@ async def on_ready():
 @bot.command(aliases=['p', 'ㅔ', '재생'])
 async def play(ctx, *, search):
   guild_id = ctx.guild.id  # 현재 서버 ID
-
   if guild_id not in music_list:
     music_list[guild_id] = []
 
@@ -75,8 +71,10 @@ async def music_play(voice_channel, ctx):
     title = info['entries'][0]['title']
     thumbnail_url = info['entries'][0]['thumbnails'][0]['url']
     youtube_url = info['entries'][0]['webpage_url']
-    duration = info['entries'][0]['duration']
-
+    if info['entries'][0]['duration'] != None:
+      duration = info['entries'][0]['duration']
+    else:
+      duration = '00:00'
   duration_str = str(timedelta(seconds=duration))
   embed = discord.Embed(title=f"🎵 {title}", color=0x0000ff, description=f'\n')
   embed.add_field(name="곡 길이", value=f"{duration_str}", inline=True)
@@ -122,7 +120,6 @@ async def queue(ctx):
                           description=description)
     await ctx.send(embed=embed)
 
-
 #대기열 삭제
 @bot.command(aliases=['삭제'])
 async def delque(ctx, index: int):
@@ -148,15 +145,20 @@ async def skip(ctx):
   else:
     await ctx.send("🎵 현재 재생 중인 노래가 없습니다.")
 
+
 #노래 다시재생하기
-@bot.command(aliases=['다시재생','r'])
+@bot.command(aliases=['다시재생', 'r'])
 async def replay(ctx):
+  global playing_music, search
   guild_id = ctx.guild.id
-  global playing_music,search
-  music_list[guild_id].insert(0,current_music[guild_id])
   voice_client = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-  voice_client.stop()
-  await ctx.send("🎵 현재노래를 다시 재생합니다.")
+  if voice_client.is_playing():
+    music_list[guild_id].insert(0, current_music[guild_id])
+    voice_client.stop()
+    await ctx.send("🎵 현재노래를 다시 재생합니다.")
+  else:
+    await ctx.send("🎵 현재 재생 중인 노래가 없습니다.")
+
 
 #노래봇 강제종료
 @bot.command(aliases=['종료', 'ss'])
@@ -168,6 +170,11 @@ async def stop(ctx):
   if voice_client.is_connected():
     await voice_client.disconnect()
 
+@bot.command(aliases= ['도움말'])
+async def help(ctx):
+  guild_id = ctx.guild.id
+  embed = discord.Embed(title = "도움말", description="도움말 테스트")
+  await guild_id.send(embed = embed)
 
 
-bot.run('API-key')
+bot.run('')
