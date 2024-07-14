@@ -3,11 +3,6 @@ from discord.ext import commands
 import yt_dlp
 import asyncio
 from datetime import timedelta
-from dotenv import load_dotenv
-import os
-load_dotenv()
-
-token = os.environ.get("DISCORDTOKEN")
 
 intents = discord.Intents.all()
 intents.message_content = True
@@ -177,4 +172,4 @@ async def help(ctx):
   await guild_id.send(embed = embed)
 
 
-bot.run('')
+bot.run(token)
