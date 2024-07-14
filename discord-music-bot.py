@@ -5,7 +5,7 @@ import asyncio
 from datetime import timedelta
 import os
 
-token = os.getenv("token")
+token = os.environ.getenv("token")
 intents = discord.Intents.all()
 intents.message_content = True
 intents.voice_states = True
