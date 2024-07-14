@@ -3,7 +3,9 @@ from discord.ext import commands
 import yt_dlp
 import asyncio
 from datetime import timedelta
+import os
 
+token = os.getenv("token")
 intents = discord.Intents.all()
 intents.message_content = True
 intents.voice_states = True
